@@ -425,6 +425,26 @@ static void __NSBundleMainBundleDealloc()
     return [(NSArray *)CFBundleCopyResourceURLsOfTypeForLocalization(_cfBundle, (CFStringRef)ext, (CFStringRef)subpath, (CFStringRef)localizationName) autorelease];
 }
 
++ (NSArray *)pathsForResourcesOfType:(NSString *)ext inDirectory:(NSString *)bundlePath
+{
+    if (bundlePath == NULL)
+        return NULL;
+    CFURLRef url = CFURLCreateWithFileSystemPath(NULL, bundlePath, kCFURLPOSIXPathStyle, true);
+    if (url == NULL)
+        return NULL;
+    
+    NSArray *urls = [(NSArray *)CFBundleCopyResourceURLsOfTypeInDirectory(url, ext, NULL) autorelease];
+    NSMutableArray *paths = [[NSMutableArray alloc] init];
+    for (NSURL *url in urls)
+    {
+        [paths addObject:[url path]];
+    }
+    CFRelease(url);
+    // CFRelease(urls);
+
+    return [paths autorelease];
+}
+
 - (NSArray *)pathsForResourcesOfType:(NSString *)ext inDirectory:(NSString *)subpath
 {
     return [self pathsForResourcesOfType:ext inDirectory:subpath forLocalization:nil];

@@ -864,3 +864,10 @@ if (_formatter != NULL) { \
 
 
 @end
+
+@implementation NSNumberFormatter (NSNumberFormatterCompatibility)
+- (NSString *)thousandSeparator
+{
+    return [self groupingSeparator];
+}
+@end
